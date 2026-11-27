@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xml:lang="zh-TW" lang="zh-TW">
+
+<head>
+    <link href="../img/LOGO.png" rel="icon" type="image/gif" />
+    <title>ETC-DOT(Event timeline coding digital observation tool)</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="generator" content="Geany 1.32" />
+
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="./vendor/cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="./vendor/cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Jquery library-->
+    <script src="./vendor/ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!--ZIP file library-->
+    <script type="text/javascript" src="./vendor/cdn.bootcdn.net/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script type="text/javascript" src="./vendor/cdn.bootcdn.net/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <!--XLSX-->
+    <script src="./vendor/cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>html,body,.obs-panel,.mymodal{overscroll-behavior-y:contain}.obs-tools{padding:3.2rem .6rem 0}.obs-settings{position:absolute;top:8px;left:8px;z-index:4}.obs-toggle{display:grid;place-items:center;width:44px;height:44px;cursor:pointer;list-style:none;font-size:1.25rem;color:#495057}.obs-toggle::-webkit-details-marker{display:none}.obs-toggle::marker{content:""}.obs-panel{background:white;width:min(31rem,calc(100vw - 16px));max-height:calc(100vh - 65px);overflow:auto;box-shadow:0 4px 12px #0003}.obs-settings ~ #obs-original #exchangeButton{left:57px}#obs-original[inert]{opacity:.75}</style>
+</head>
+
+
+<body>
+<details class="obs-settings">
+    <summary id="obs-gear" class="obs-toggle" title="觀課設定" aria-label="開啟或收合觀課設定">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+    </summary>
+    <section class="obs-panel border rounded p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fs-5">觀課設定</h2>
+            <button type="button" class="btn-close p-2" aria-label="關閉設定"
+                onclick="this.closest('details').open = false; document.getElementById('obs-gear').focus()"></button>
+        </div>
+        
+        <button type="button" class="btn btn-outline-primary mb-2" id="obs-save">儲存目前設定</button>
+        <label class="form-label" for="obs-selected">已儲存的設定</label>
+        <select id="obs-selected" class="form-select mb-2"></select>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-primary" id="obs-apply">套用設定</button>
+            <button type="button" class="btn btn-outline-secondary" id="obs-edit">重新命名</button>
+        </div>
+        <form id="obs-rename" class="mt-2" hidden>
+            <label for="obs-name" class="form-label">新的設定名稱</label>
+            <input id="obs-name" class="form-control mb-2" maxlength="100" required>
+            <button type="submit" class="btn btn-primary">儲存名稱</button>
+            <button type="button" class="btn btn-outline-secondary" id="obs-cancel">取消</button>
+        </form>
+        <p id="obs-notice" class="small mt-2 mb-0" role="status"></p>
+    </section>
+</details>
+<div class="obs-tools text-center">
+    <div id="obs-status" class="small mb-2" role="status">開始觀課後會自動暫存。</div>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <button type="button" class="btn btn-outline-secondary" id="obs-download" disabled>下載觀課備份</button>
+        <button type="button" class="btn btn-outline-secondary" id="obs-import">匯回觀課備份</button>
+        <button type="button" class="btn btn-primary" id="obs-resume" hidden>繼續計時（Resume）</button>
+        <input type="file" id="obs-file" accept=".json,application/json" hidden>
+    </div>
+</div>
+<div id="obs-original">
+    <button class="infoButton" id="infoButton"><i class="fa fa-info-circle"></i></button>
+    <button class="exchangeButton" id="exchangeButton"><i class="fa fa-exchange" aria-hidden="true"></i></button>
+
+    <!-- The Modal -->
+    <div id="myModal" class="mymodal">
+        <!-- Modal content -->
+        <div class="mymodal-content">
+            <div class="mymodal-header">
+                <span class="close">&times;</span>
+                <h2>事件時間線標記數位觀課工具<br>（Event timeline coding digital observation tool）</h2>
+            </div>
+            <div class="mymodal-body">
+                <ul>
+                    <li>版本：ETC1.1</li>
+                    <li>簡介：</li>
+                    <p>本程式基於赫爾辛基大學的Miikka Turkkila研究員所開發的開源程式轉製而成1.0版，程式網址：
+                        <a href="https://bit.ly/etcdot">https://bit.ly/etcdot</a>，再依教師社群測試和運用結果，修改成本1.1版。
+                    </p>
+                    <li>使用說明：（可參閱此<a
+                            href="https://docs.google.com/presentation/d/1isseZykshfq5tnNVhbSkRiHfAa62zmE_/edit"
+                            target="_blank">連結</a>）</li><br>
+                    <li>授權說明：</li>
+                    <p>
+                        「事件時間線標記數位觀課工具」由國立臺灣師範大學製作，以創用CC姓名標示-非商業性-相同方式分享4.0國際授權條款釋出。（<a
+                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant"
+                            target="_blank">https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant</a>）
+                    </p>
+                    <li>文獻引用：</li>
+                    <p>
+                        國立臺灣師範大學(2024)。事件時間線標記數位觀課工具(1.1版)。113年中小學教師專業發展人才培訓輔導計畫。<br>
+                        National Taiwan Normal University(2024). Event timeline coding digital observation
+                        tool(1.1version). The training and counseling plan for primary and secondary school
+                        teachersprofessional development at 2024.
+                    </p>
+                    <li>本ETC1.1數位工具，在測試與試用後，將開放開源程式。</li>
+                    <img id="logo" width="200" src="../img/LOGO.png" alt="logo" />
+                </ul>
+            </div>
+            <div class=" mymodal-footer">
+                <h4>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+                        CC BY-NC-SA 4.0
+                    </a>
+                    計畫主持人：張民杰&emsp;程式協作：楊智翔
+                </h4>
+                This work is licensed under a
+                <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons
+                    Attribution-NonCommercial-ShareAlike
+                    4.0 International License
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-xxl bg-success.bg-gradient">
+        <div class="d-flex justify-content-center pt-4">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-primary btn-lg px-4 fs-2" id="bM" value="Start"
+                    onclick="masterStartStop()">Start</button>
+            </div>
+            <div class="p-3">
+                <span class="fs-2" id="MasterTime">00:00</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-danger btn-lg px-4 fs-2" id="resetStop" onclick="resetStop()">Reset</button>
+            </div>
+        </div>
+        <hr>
+        <div id="mobile_device" class="d-flex row justifycontent-center d-none">
+            <div class="d-flex row justify-content-center" id="mb_setting_div">
+                <div class="d-flex row justify-content-center">
+                    <div class="col-auto">
+                        <input type="radio" id="p-0" value="0" name="page" class="btn-check" autocomplete="off" checked>
+                        <label for="p-0" class="btn myhover fs-4 mb-2" onclick="pgChange(0)">P1</label>
+                        <input type="radio" id="p-1" value="1" name="page" class="btn-check" autocomplete="off">
+                        <label for="p-1" class="btn myhover fs-4 mb-2" onclick="pgChange(1)">P2</label>
+                        <input type="radio" id="p-2" value="2" name="page" class="btn-check" autocomplete="off">
+                        <label for="p-2" class="btn myhover fs-4 mb-2" onclick="pgChange(2)">P3</label>
+                        <input type="radio" id="p-3" value="3" name="page" class="btn-check" autocomplete="off">
+                        <label for="p-3" class="btn myhover fs-4 mb-2" onclick="pgChange(3)">P4</label>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn fs-4 mb-2 px-3 btn-secondary" onclick="pgObReduce()">-</button>
+                        <button class="btn fs-4 mb-2 btn-secondary" onclick="pgObIncrease()">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center row d-none" id="mb_info_div">
+                <div class="d-flex row justify-content-center">
+                    <div class="col-auto">
+                        <button class="btn fs-4 mb-2 disabled btn-danger">P1</button>
+                        <button class="btn fs-4 mb-2 disabled btn-warning">P2</button>
+                        <button class="btn fs-4 mb-2 disabled btn-success">P3</button>
+                        <button class="btn fs-4 mb-2 disabled btn-primary">P4</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center my-3">
+                <div id="mb_work_div" class="d-flex flex-wrap gap-2 justify-content-center col-12 col-md-10 col-lg-8">
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center d-none" id="mb_action_div">
+                <div class="d-flex d-grid gap-2 justify-content-evenly col-auto">
+                    <button class="btn btn-primary" onclick="stageChange()">Next</button>
+                    <button class="btn btn-success d-none" onclick="nextRound()">Send</button>
+                </div>
+            </div>
+        </div>
+        <div id="desktop_device" class="d-flex row justify-content-center d-none">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 col-10 col-xl-12">
+                <div class="col mb-2">
+                    <div id="dt_setting_div_0" class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-secondary fs-5" onclick="ObReduce(0)">-</button>
+                        <button class="btn btn-danger fs-5 mx-1">P1</button>
+                        <button class="btn btn-secondary fs-5" onclick="ObIncrease(0)">+</button>
+                    </div>
+                    <div id="dt_info_div_0" class="d-flex justify-content-center row d-none">
+                        <div class="d-flex row justify-content-center">
+                            <div class="col-auto">
+                                <button class="btn fs-4 mb-2 disabled btn-outline-danger">P1</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dt_work_div_0" class="d-flex row row-cols-1 gap-2 justify-content-center g-0">
+                    </div>
+                </div>
+                <div class="col mb-2">
+                    <div id="dt_setting_div_1" class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-secondary fs-5" onclick="ObReduce(1)">-</button>
+                        <button class="btn btn-warning fs-5 mx-1">P2</button>
+                        <button class="btn btn-secondary fs-5" onclick="ObIncrease(1)">+</button>
+                    </div>
+                    <div id="dt_info_div_1" class="d-flex justify-content-center row d-none">
+                        <div class="d-flex row justify-content-center">
+                            <div class="col-auto">
+                                <button class="btn fs-4 mb-2 disabled btn-outline-warning">P2</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dt_work_div_1" class="d-flex row row-cols-1 gap-2 justify-content-center g-0">
+                    </div>
+                </div>
+                <div class="col mb-2">
+                    <div id="dt_setting_div_2" class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-secondary fs-5" onclick="ObReduce(2)">-</button>
+                        <button class="btn btn-success fs-5 mx-1">P3</button>
+                        <button class="btn btn-secondary fs-5" onclick="ObIncrease(2)">+</button>
+                    </div>
+                    <div id="dt_info_div_2" class="d-flex justify-content-center row d-none">
+                        <div class="d-flex row justify-content-center">
+                            <div class="col-auto">
+                                <button class="btn fs-4 mb-2 disabled btn-outline-success">P3</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dt_work_div_2" class="d-flex row row-cols-1 gap-2 justify-content-center g-0">
+                    </div>
+                </div>
+                <div class="col mb-2">
+                    <div id="dt_setting_div_3" class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-secondary fs-5" onclick="ObReduce(3)">-</button>
+                        <button class="btn btn-primary fs-5 mx-1">P4</button>
+                        <button class="btn btn-secondary fs-5" onclick="ObIncrease(3)">+</button>
+                    </div>
+                    <div id="dt_info_div_3" class="d-flex justify-content-center row d-none">
+                        <div class="d-flex row justify-content-center">
+                            <div class="col-auto">
+                                <button class="btn fs-4 mb-2 disabled btn-outline-primary">P4</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dt_work_div_3" class="d-flex row row-cols-1 gap-2 justify-content-center g-0">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center d-none" id="dt_action_div">
+                <div class="d-flex d-grid gap-2 justify-content-evenly">
+                    <button class="btn btn-success fs-4" onclick="nextRound()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="d-flex justify-content-center align-items-center py-2 flex-wrap btn-group" id="divOperate">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-secondary fs-4 m-1 disabled" onclick="showResult()">Show result</button>
+            </div>
+            <div class="form-floating m-1" id="input-group">
+                <input class="form-control" type="text" id="filename" placeholder="Filename">
+                <label for="filename">Filename</label>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-secondary m-1 fs-4 dropdown-toggle disabled" id="download" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class=" fa
+                    fa-download"></i>
+                    Download file</button>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="download">
+                    <li><button class="dropdown-item" onclick="getXlsxData()">Records(.xlsx)</button></li>
+                    <li><button class="dropdown-item" onclick="saveTimeline(0)">P1/P2
+                            timeline(.png)</button></li>
+                    <li><button class="dropdown-item" onclick="saveTimeline(2)">P3/P4
+                            timeline(.png)</button></li>
+                    <li><button class="dropdown-item" onclick="downloadTables()">Stancial table(.html)</button></li>
+                    <li><button class="dropdown-item" onclick="downloadZipFile()">All files(.zip)</button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="d-flex justify-content-center mb-2" id="divTimelineP1P2"></div>
+    <div class="d-flex justify-content-center mb-2" id="divTimelineP3P4"></div>
+    <div class="row justify-content-center" id="divTable"></div>
+
+    <!-- Optional JavaScript -->
+    <script src="./vendor/cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js">
+        </script>
+    <script src="./vendor/cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js">
+        </script>
+    <script src="../observation-recovery.js"></script>
+    <script src="graph.js"></script>
+    <script src="observation-tool.js"></script>
+    <script>prepare();</script>
+</div>
+</body>
+
+</html>

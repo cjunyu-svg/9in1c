@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>STC-DOT (Set timeline coding digital observation tool)</title>
+
+    <link rel="icon" href="../img/LOGO.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="./vendor/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="./vendor/cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS + Popper（bundle 包含 Popper.js） -->
+    <script src="./vendor/cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Jquery library-->
+    <script src="./vendor/ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <!--ZIP file library-->
+    <script type="text/javascript" src="./vendor/cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script type="text/javascript" src="./vendor/cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+    <!--XLSX-->
+    <script src="./vendor/cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>html,body,.obs-panel,.mymodal{overscroll-behavior-y:contain}.obs-tools{padding:3.2rem .6rem 0}.obs-settings{position:absolute;top:8px;left:8px;z-index:4}.obs-toggle{display:grid;place-items:center;width:44px;height:44px;cursor:pointer;list-style:none;font-size:1.25rem;color:#495057}.obs-toggle::-webkit-details-marker{display:none}.obs-toggle::marker{content:""}.obs-panel{background:white;width:min(31rem,calc(100vw - 16px));max-height:calc(100vh - 65px);overflow:auto;box-shadow:0 4px 12px #0003}.obs-settings ~ #obs-original #exchangeButton{left:57px}#obs-original[inert]{opacity:.75}</style>
+</head>
+
+
+
+<body>
+<details class="obs-settings">
+    <summary id="obs-gear" class="obs-toggle" title="觀課設定" aria-label="開啟或收合觀課設定">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+    </summary>
+    <section class="obs-panel border rounded p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fs-5">觀課設定</h2>
+            <button type="button" class="btn-close p-2" aria-label="關閉設定"
+                onclick="this.closest('details').open = false; document.getElementById('obs-gear').focus()"></button>
+        </div>
+        
+        <button type="button" class="btn btn-outline-primary mb-2" id="obs-save">儲存目前設定</button>
+        <label class="form-label" for="obs-selected">已儲存的設定</label>
+        <select id="obs-selected" class="form-select mb-2"></select>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-primary" id="obs-apply">套用設定</button>
+            <button type="button" class="btn btn-outline-secondary" id="obs-edit">重新命名</button>
+        </div>
+        <form id="obs-rename" class="mt-2" hidden>
+            <label for="obs-name" class="form-label">新的設定名稱</label>
+            <input id="obs-name" class="form-control mb-2" maxlength="100" required>
+            <button type="submit" class="btn btn-primary">儲存名稱</button>
+            <button type="button" class="btn btn-outline-secondary" id="obs-cancel">取消</button>
+        </form>
+        <p id="obs-notice" class="small mt-2 mb-0" role="status"></p>
+    </section>
+</details>
+<div class="obs-tools text-center">
+    <div id="obs-status" class="small mb-2" role="status">開始觀課後會自動暫存。</div>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <button type="button" class="btn btn-outline-secondary" id="obs-download" disabled>下載觀課備份</button>
+        <button type="button" class="btn btn-outline-secondary" id="obs-import">匯回觀課備份</button>
+        <button type="button" class="btn btn-primary" id="obs-resume" hidden>繼續計時（Resume）</button>
+        <input type="file" id="obs-file" accept=".json,application/json" hidden>
+    </div>
+</div>
+<div id="obs-original">
+    <button class="infoButton" id="infoButton"><i class="fa fa-info-circle"></i></button>
+    <!-- The Modal -->
+    <div id="myModal" class="mymodal">
+        <!-- Modal content -->
+        <div class="mymodal-content">
+            <div class="mymodal-header">
+                <span class="close">&times;</span>
+                <h2>編組時間線標記數位觀課工具<br>（Set timeline coding digital observation tool）</h2>
+            </div>
+            <div class="mymodal-body">
+                <ul>
+                    <li>版本：STC1.0</li>
+                    <li>簡介：</li>
+                    <p>本程式基於赫爾辛基大學的Miikka Turkkila研究員所開發的開源程式轉製而成1.0版，程式網址：
+                        <a href="https://bit.ly/STC-DOT">https://bit.ly/STC-DOT</a>。
+                    </p>
+                    <li>使用說明：（可參閱此<a
+                            href="https://docs.google.com/presentation/d/1isseZykshfq5tnNVhbSkRiHfAa62zmE_/edit"
+                            target="_blank">連結</a>）</li><br>
+                    <li>授權說明：</li>
+                    <p>
+                        「編組時間線標記數位觀課工具」由國立臺灣師範大學製作，以創用CC姓名標示-非商業性-相同方式分享4.0國際授權條款釋出。（<a
+                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant"
+                            target="_blank">https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant</a>）
+                    </p>
+                    <li>文獻引用：</li>
+                    <p>
+                        國立臺灣師範大學師資培育學院(2026)。編組時間線標記數位觀課工具(1.0版)。國立臺灣師範大學。<br>
+                        National Taiwan Normal University School of Teacher Education(2026). Set timeline coding digital
+                        observation tool(1.0 version). National Taiwan Normal University.
+                    </p>
+                    <li>本STC1.0數位工具，在測試與試用後，將開放開源程式。</li>
+                    <img id="logo" width="200" src="../img/LOGO.png" alt="logo" />
+                </ul>
+            </div>
+            <div class="mymodal-footer">
+                <h4><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant">CC BY-NC-SA 4.0</a>
+                    計畫主持人：張民杰&emsp;程式協作：楊智翔
+                </h4>This work is licensed under a <a rel="license"
+                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant">Creative Commons
+                    Attribution-NonCommercial-ShareAlike
+                    4.0 International License</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-xxl bg-success.bg-gradient">
+        <div class="d-flex justify-content-center pt-4">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-primary btn-lg px-4 fs-2" id="startButton" value="Start">Start</button>
+            </div>
+            <div class="p-3">
+                <span class="fs-2" id="timerDisplay">00:00</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-danger btn-lg px-4 fs-2" style="color:white" id="resetStop">Reset</button>
+            </div>
+        </div>
+        <div id="btnOP_div" class="d-flex align-items-center justify-content-center mb-2">
+            <span class="fs-3 mx-2">Add Button</span>
+            <button class="btn btn-secondary fs-5" id="addInput">+</button>
+        </div>
+        <hr>
+        <!-- 外層使用 row，讓子元素 responsive 排列 -->
+        <div id="work_div" class="row justify-content-center col-12 col-md-10 col-xxl-8 g-2 mx-auto">
+
+            <!-- 其他群組同樣結構，重複使用相同的 class -->
+        </div>
+        <div id="btn_div" class="mt-4 d-none"></div>
+
+        <hr>
+        <div class="d-flex justify-content-center align-items-center py-2 flex-wrap btn-group" id="result_btns">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-secondary fs-4 m-1 disabled" onclick="createTimeline()">Show result</button>
+            </div>
+            <div class="form-floating m-1" id="input-group">
+                <input class="form-control" type="text" id="filename" placeholder="Filename">
+                <label for="filename">Filename</label>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-secondary fs-4 m-1 disabled" onclick="saveTimeline()">Save image</button>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-secondary fs-4 m-1 disabled" onclick="exportToXlsx()"><i
+                        class="fa fa-download"></i>
+                    Download xlsx-file</button>
+            </div>
+        </div>
+        <br>
+        <div id="result_div" class="d-flex justify-content-center mb-2">
+        </div>
+    </div>
+
+    <script src="../observation-recovery.js"></script>
+    <script src="graph.js"></script>
+    <script src="observation-tool.js"></script>
+
+    <script>
+        inputInitialize();
+        modalControl();
+    </script>
+    <!-- 群組選擇彈窗（隱藏式） -->
+    <div id="groupSelectorModal" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">選擇群組</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="group-list-container">
+                        <button type="button" class="group-item ungrouped-item" data-group="0">
+                            <span class="color-indicator"></span>
+                            <span class="group-label">Ungrouped</span>
+                        </button>
+
+                        <hr class="my-3 opacity-10">
+
+                        <div class="group-grid">
+                            <button type="button" class="group-item group-1" data-group="1">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 1</span>
+                            </button>
+                            <button type="button" class="group-item group-2" data-group="2">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 2</span>
+                            </button>
+                            <button type="button" class="group-item group-3" data-group="3">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 3</span>
+                            </button>
+                            <button type="button" class="group-item group-4" data-group="4">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 4</span>
+                            </button>
+                            <button type="button" class="group-item group-5" data-group="5">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 5</span>
+                            </button>
+                            <button type="button" class="group-item group-6" data-group="6">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 6</span>
+                            </button>
+                            <button type="button" class="group-item group-7" data-group="7">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 7</span>
+                            </button>
+                            <button type="button" class="group-item group-8" data-group="8">
+                                <span class="color-indicator"></span>
+                                <span class="group-label">Group 8</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

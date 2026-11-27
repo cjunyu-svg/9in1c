@@ -1,0 +1,347 @@
+ .infoButton {
+     position: absolute;
+     top: 10px;
+     right: 10px;
+     background-color: transparent;
+     border: none;
+     cursor: pointer;
+     font-size: 24px;
+ }
+
+ .ShareButton {
+     position: absolute;
+     top: 10px;
+     left: 10px;
+     background-color: transparent;
+     border: none;
+     cursor: pointer;
+     font-size: 24px;
+ }
+
+ /* The Modal (background) */
+ .mymodal {
+     display: none;
+     /* Hidden by default */
+     position: fixed;
+     /* Stay in place */
+     z-index: 3;
+     /* Sit on top */
+     padding-top: 100px;
+     /* Location of the box */
+     left: 0;
+     top: 0;
+     width: 100%;
+     /* Full width */
+     height: 100%;
+     /* Full height */
+     overflow: auto;
+     /* Enable scroll if needed */
+     background-color: rgb(0, 0, 0);
+     /* Fallback color */
+     background-color: rgba(0, 0, 0, 0.4);
+     /* Black w/ opacity */
+ }
+
+ /* Modal Content */
+ .mymodal-content {
+     position: relative;
+     background-color: #fefefe;
+     margin: auto;
+     padding: 0;
+     border: 1px solid #888;
+     width: 80%;
+     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+     -webkit-animation-name: animatetop;
+     -webkit-animation-duration: 0.4s;
+     animation-name: animatetop;
+     animation-duration: 0.4s
+ }
+
+ /* Add Animation */
+ @-webkit-keyframes animatetop {
+     from {
+         top: -300px;
+         opacity: 0
+     }
+
+     to {
+         top: 0;
+         opacity: 1
+     }
+ }
+
+ @keyframes animatetop {
+     from {
+         top: -300px;
+         opacity: 0
+     }
+
+     to {
+         top: 0;
+         opacity: 1
+     }
+ }
+
+ /* The Close Button */
+ .close {
+     color: white;
+     float: right;
+     font-size: 28px;
+     font-weight: bold;
+ }
+
+ .close:hover,
+ .close:focus {
+     color: #000;
+     text-decoration: none;
+     cursor: pointer;
+ }
+
+ .mymodal-header {
+     padding: 2px 16px;
+     background-color: #009bff;
+     color: white;
+ }
+
+ .mymodal-body {
+     padding: 2px 16px;
+ }
+
+ .mymodal-footer {
+     padding: 2px 16px;
+     background-color: #009bff;
+     color: white;
+ }
+
+ /* 預設隱藏 icon 區塊 */
+ .icon-group {
+     visibility: hidden;
+     pointer-events: none;
+     /* 可選：平滑淡入淡出 */
+ }
+
+ /* 1. 當 hover 整個群組容器時顯示 icon（即使沒 active） */
+ .col-12.col-md-6:hover .icon-group {
+     visibility: visible;
+     pointer-events: auto;
+     opacity: 1;
+ }
+
+ /* icon 本身的按鈕效果（點擊時有反饋） */
+ .icon-btn {
+     cursor: pointer;
+     padding: 0;
+     border-radius: 50%;
+     transition: all 0.15s ease;
+ }
+
+ .icon-btn:active,
+ .icon-btn:focus {
+     transform: scale(0.92);
+     outline: none;
+ }
+
+ /* Group 1 */
+ .group-1 .form-control {
+     border-color: var(--bs-red, #dc3545) !important;
+ }
+
+ /* Group 2 */
+ .group-2 .form-control {
+     border-color: var(--bs-orange, #fd7e14) !important;
+ }
+
+ /* Group 3 */
+ .group-3 .form-control {
+     border-color: var(--bs-yellow, #ffc107) !important;
+ }
+
+ /* Group 4 */
+ .group-4 .form-control {
+     border-color: var(--bs-green, #198754) !important;
+ }
+
+ /* Group 5 */
+ .group-5 .form-control {
+     border-color: var(--bs-teal, #20c997) !important;
+ }
+
+ /* Group 6 */
+ .group-6 .form-control {
+     border-color: var(--bs-blue, #0d6efd) !important;
+ }
+
+ /* Group 7 */
+ .group-7 .form-control {
+     border-color: var(--bs-indigo, #6610f2) !important;
+ }
+
+ /* Group 8 */
+ .group-8 .form-control {
+     border-color: var(--bs-pink, #d63384) !important;
+ }
+
+ /* 容器樣式 */
+ .group-list-container {
+     display: flex;
+     flex-direction: column;
+     gap: 8px;
+ }
+
+ /* 基礎按鈕樣式 */
+ .group-item {
+     display: flex;
+     align-items: center;
+     width: 100%;
+     padding: 12px 16px;
+     border: 1px solid #e9ecef;
+     background-color: #fff;
+     border-radius: 12px;
+     transition: all 0.2s ease;
+     text-align: left;
+     margin-bottom: 4px;
+ }
+
+ .group-item:hover {
+     background-color: #f8f9fa;
+     transform: translateY(-2px);
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+     border-color: transparent;
+ }
+
+ .group-item:active {
+     transform: translateY(0);
+ }
+
+ /* 色彩指標 (圓點) */
+ .color-indicator {
+     width: 12px;
+     height: 12px;
+     border-radius: 50%;
+     margin-right: 15px;
+     display: inline-block;
+     flex-shrink: 0;
+ }
+
+ .group-label {
+     font-weight: 500;
+     color: #495057;
+ }
+
+ /* --- 核心 8 色應用 --- */
+ .ungrouped-item .color-indicator {
+     background-color: #dee2e6;
+ }
+
+ .group-1 .color-indicator {
+     background-color: var(--bs-red, #dc3545);
+ }
+
+ .group-1:hover {
+     border-color: var(--bs-red, #dc3545);
+ }
+
+ .group-2 .color-indicator {
+     background-color: var(--bs-orange, #fd7e14);
+ }
+
+ .group-2:hover {
+     border-color: var(--bs-orange, #fd7e14);
+ }
+
+ .group-3 .color-indicator {
+     background-color: var(--bs-yellow, #ffc107);
+ }
+
+ .group-3:hover {
+     border-color: var(--bs-yellow, #ffc107);
+ }
+
+ .group-4 .color-indicator {
+     background-color: var(--bs-green, #198754);
+ }
+
+ .group-4:hover {
+     border-color: var(--bs-green, #198754);
+ }
+
+ .group-5 .color-indicator {
+     background-color: var(--bs-teal, #20c997);
+ }
+
+ .group-5:hover {
+     border-color: var(--bs-teal, #20c997);
+ }
+
+ .group-6 .color-indicator {
+     background-color: var(--bs-blue, #0d6efd);
+ }
+
+ .group-6:hover {
+     border-color: var(--bs-blue, #0d6efd);
+ }
+
+ .group-7 .color-indicator {
+     background-color: var(--bs-indigo, #6610f2);
+ }
+
+ .group-7:hover {
+     border-color: var(--bs-indigo, #6610f2);
+ }
+
+ .group-8 .color-indicator {
+     background-color: var(--bs-pink, #d63384);
+ }
+
+ .group-8:hover {
+     border-color: var(--bs-pink, #d63384);
+ }
+
+ /* 選中狀態的樣式 */
+ .group-item.active {
+     background-color: #f0f7ff;
+     /* 淡淡的藍色背景 */
+     border-color: #0d6efd !important;
+     /* 強制顯示藍色邊框 */
+     box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+     /* 外發光 */
+     position: relative;
+ }
+
+ /* 在選中狀態右側加一個小勾勾 (可選) */
+ .group-item.active::after {
+     content: '✓';
+     position: absolute;
+     right: 20px;
+     color: #0d6efd;
+     font-weight: bold;
+ }
+
+ .btn-group .btn.active {
+     background-color: #0d6efd;
+     color: white;
+     border-color: #0d6efd;
+ }
+
+ .btn-group .btn {
+     margin: 0 4px 4px 0;
+     white-space: normal;
+ }
+
+
+ /* 自訂文字顏色（如果 Bootstrap 沒有 text-indigo / text-pink 等） */
+ .text-indigo {
+     color: #6610f2 !important;
+ }
+
+ .text-pink {
+     color: #d63384 !important;
+ }
+
+ .text-orange {
+     color: #fd7e14 !important;
+ }
+
+ .text-teal {
+     color: #20c997 !important;
+ }

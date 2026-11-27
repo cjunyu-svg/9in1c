@@ -1,0 +1,330 @@
+ /* body {
+   height: 100vh;
+   width: 100vw;
+   max-width: 1200px;
+   min-width: 480px;
+   margin: auto;
+   background-color: whitesmoke;
+ } */
+
+ .infoButton {
+   position: absolute;
+   top: 0px;
+   right: 1%;
+   background-color: transparent;
+   border: none;
+   cursor: pointer;
+   font-size: 24px;
+ }
+
+ /* 
+ .divStopwatch {
+   height: 10%;
+   width: 100%;
+ }
+
+ #runningInfo {
+   position: relative;
+ }
+ */
+
+ /*  #runningInfo div {
+   font-size: min(max(10px, 3.0vw), 32px);
+   height: 40px;
+   width: 300px;
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   margin: auto;
+ } */
+
+ /*  input[type=number] {
+   font-size: min(max(10px, 3.0vw), 22px);
+   width: 10%;
+   padding: 5px 5px;
+   margin: 0px 30px 0px 10px;
+   box-sizing: border-box;
+ } */
+
+ /* select {
+   font-size: min(max(10px, 3.0vw), 22px);
+   width: 10%;
+   padding: 5px 5px;
+   box-sizing: border-box;
+ }
+
+ .buttonAdd {
+   background-color: #e6e6e6;
+   border: none;
+   color: black;
+   padding: 10px;
+   text-align: center;
+   font-size: min(max(10px, 3.0vw), 24px);
+   margin: 2px 2px;
+   cursor: pointer;
+   border-radius: 6px;
+ }
+
+ .buttonMain {
+   background-color: #009bff;
+   border: none;
+   color: white;
+   padding: 10px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: min(max(10px, 3vw), 32px);
+   margin: 4px 4px;
+   cursor: pointer;
+   border-radius: 12px;
+   width: 48%;
+   min-height: 120px;
+   max-height: 400px;
+ } */
+
+
+ /*  .divButtons {
+   height: 70%;
+   width: 100%;
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+ }
+
+ #divButtons input[type="radio"] {
+   display: none;
+ }
+
+ #divButtons input:checked+.btn1 {
+   background: #3ddc97;
+ }
+
+ #divButtons .button {
+   border: #000 2px solid;
+ }
+
+ #divButtons .btn1:hover {
+   background: #0070bb;
+   color: #fff;
+ }
+
+ #divButtons .round {
+   border-radius: 5px;
+ }
+
+ button:disabled {
+   filter: opacity(70%);
+ } */
+
+ @media screen and (min-width: 1200px) {
+   buttonMain {
+     font-size: 36px;
+   }
+ }
+
+ /* .buttonDL {
+   background-color: #a1a1a1;
+   border: none;
+   color: black;
+   padding: 25px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: min(max(10px, 3.0vw), 24px);
+   margin: 1px 4px;
+   cursor: pointer;
+   border-radius: 10px;
+ } */
+
+ /* The Modal (background) */
+ .mymodal {
+   display: none;
+   /* Hidden by default */
+   position: fixed;
+   /* Stay in place */
+   z-index: 1;
+   /* Sit on top */
+   padding-top: 100px;
+   /* Location of the box */
+   left: 0;
+   top: 0;
+   width: 100%;
+   /* Full width */
+   height: 100%;
+   /* Full height */
+   overflow: auto;
+   /* Enable scroll if needed */
+   background-color: rgb(0, 0, 0);
+   /* Fallback color */
+   background-color: rgba(0, 0, 0, 0.4);
+   /* Black w/ opacity */
+ }
+
+ /* Modal Content */
+ .mymodal-content {
+   position: relative;
+   background-color: #fefefe;
+   margin: auto;
+   padding: 0;
+   border: 1px solid #888;
+   width: 80%;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+   -webkit-animation-name: animatetop;
+   -webkit-animation-duration: 0.4s;
+   animation-name: animatetop;
+   animation-duration: 0.4s
+ }
+
+ /* Add Animation */
+ @-webkit-keyframes animatetop {
+   from {
+     top: -300px;
+     opacity: 0
+   }
+
+   to {
+     top: 0;
+     opacity: 1
+   }
+ }
+
+ @keyframes animatetop {
+   from {
+     top: -300px;
+     opacity: 0
+   }
+
+   to {
+     top: 0;
+     opacity: 1
+   }
+ }
+
+ /* The Close Button */
+ .close {
+   color: white;
+   float: right;
+   font-size: 28px;
+   font-weight: bold;
+ }
+
+ .close:hover,
+ .close:focus {
+   color: #000;
+   text-decoration: none;
+   cursor: pointer;
+ }
+
+ .mymodal-header {
+   padding: 2px 16px;
+   background-color: #009bff;
+   color: white;
+ }
+
+ .mymodal-body {
+   padding: 2px 16px;
+ }
+
+ .mymodal-footer {
+   padding: 2px 16px;
+   background-color: #009bff;
+   color: white;
+ }
+
+ .blink-alert {
+   animation-duration: 0.3s;
+   animation-name: blink-alert;
+   animation-iteration-count: infinite;
+   animation-direction: alternate;
+   animation-timing-function: ease-in-out;
+ }
+
+ @keyframes blink-alert {
+   0% {
+     color: white;
+     background-color: red;
+   }
+
+   33% {
+     color: white;
+     background-color: red;
+   }
+
+   66% {
+     color: red;
+     background-color: white;
+   }
+
+   100% {
+     color: red;
+     background-color: white;
+   }
+ }
+
+ input:not(:checked)+label[class*="btn-outline-primary"]:hover.mobile-device {
+  color: #0d6efd;
+  background-color: white;
+  border-color:#0d6efd;
+}
+
+ /*
+ #radio input[type="radio"] {
+   display: none;
+ }
+
+  #radio {
+   height: 70%;
+   width: 100%;
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+ }
+
+ #radio label {
+
+   display: block;
+
+   padding: 10px;
+   text-decoration: none;
+   font-size: min(max(10px, 3vw), 32px);
+   margin: 4px 4px;
+   cursor: pointer;
+   border-radius: 12px;
+   width: 48%;
+   min-height: 120px;
+   max-height: 400px;
+   background-color: #009bff;
+   border: none;
+   color: white;
+ }
+
+ #radio .button {
+   display: flex;
+   position: relative;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   height: min-content;
+
+   font-size: min(max(10px, 3vw), 32px);
+   padding: 10px;
+   margin: 0 5px 10px 0;
+   background: #009bff;
+   border: none;
+   color: white;
+   cursor: pointer;
+ }
+
+ #radio input:checked+.button {
+   background: #5e7380;
+   color: #fff;
+   cursor: default;
+ }
+
+ #radio label:has(input:checked) {
+  background: #5e7380;
+  color: #fff;
+  cursor: default;
+} */
